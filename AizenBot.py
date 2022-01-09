@@ -8,13 +8,14 @@ if os.path.exists(os.getcwd() + "/config.json"):
     with open("./config.json") as f:
         configData = json.load(f)
 else:
-    configTemplate = {"Token": "", "Prefix": "a!"}
+    configTemplate = {"Token": "", "Prefix": "a!", "ChannelId" : ""}
 
     with open(os.getcwd() + "/config.json", "w+") as f:
         json.dump(configTemplate, f)
 
 token = configData["Token"]
 prefix = configData["Prefix"]
+channelId = configData["ChannelId"]
 
 bot = commands.Bot(prefix)
 
@@ -38,7 +39,7 @@ async def try_teste(ctx):
 
 @tasks.loop(seconds=10)#hours = 1
 async def boss_raid():
-    channel = bot.get_channel(887766308991692822)
+    channel = bot.get_channel(channelId)
 
     await channel.send("loop")
 
