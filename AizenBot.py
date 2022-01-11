@@ -37,10 +37,11 @@ async def try_teste(ctx):
 
     await ctx.send(response)
 
-@tasks.loop(seconds=10)#hours = 1
+@tasks.loop(seconds=60)#hours = 1
 async def boss_raid():
     channel = bot.get_channel(channelId)
-
-    await channel.send("loop")
+    
+    await channel.send(file=discord.File('assets\\grimmjow-anime.gif'))
+    await channel.send("Grimmjow apareceu para destruir o servidor, 11° esquadrão, ao ataque")
 
 bot.run(token)
