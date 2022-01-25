@@ -4,11 +4,13 @@ from discord.ext import commands, tasks
 import json
 import os
 
+os.chdir('C:\\Users\\User\\Desktop\\AizenBot_Repository\\AizenBot.py')
+
 if os.path.exists(os.getcwd() + "/config.json"):
     with open("./config.json") as f:
         configData = json.load(f)
 else:
-    configTemplate = {"Token": "", "Prefix": "a!", "ChannelId" : ""}
+    configTemplate = {"Token": "", "Prefix": "", "ChannelId" : ""}
 
     with open(os.getcwd() + "/config.json", "w+") as f:
         json.dump(configTemplate, f)
@@ -17,12 +19,12 @@ token = configData["Token"]
 prefix = configData["Prefix"]
 channelId = configData["ChannelId"]
 
+
 bot = commands.Bot(prefix)
 
 @bot.event
 async def on_ready():
     print("Ready to start!")
-    boss_raid.start()
 
 @bot.event
 async def on_message(message):
@@ -33,15 +35,54 @@ async def on_message(message):
 @bot.command(name="teste")
 async def try_teste(ctx):
     name = ctx.author.name
-    response = "Estou funcionando senhor " + name
+    response = "Estou funcionando desgraça"
 
     await ctx.send(response)
 
-@tasks.loop(seconds=60)#hours = 1
-async def boss_raid():
-    channel = bot.get_channel(channelId)
-    
-    await channel.send(file=discord.File('assets\\grimmjow-anime.gif'))
-    await channel.send("Grimmjow apareceu para destruir o servidor, 11° esquadrão, ao ataque")
+@bot.command(aliases=['bal'])
+async def balance(ctx, user: discord.Member = None):
+    if not user:
+        user = ctx.author
+        await open_account(user)
+
+        users = await get_bank_data()
+        user = user
+
+        wallet_amount = users[str(user.id)]["walllet"]
+        bank_amount = users[str(user.id)]["bank"]
+
+        embed = discord.Embed(title= "User\'s ballance")
+        embed.add_field(name="wallet", value=f"{wallet_amount}")
+        embed.add_field(name="bank", value=f"{bank_amount}")
+
+    await ctx.send(embed = embed)
+
+async def open_account(user):
+    users = await get_bank_data()
+
+    if str(user.id) in users:
+        return False
+    else:
+        users[str(user.id)] = {} 
+        users[str(user.id)]["wallet"] = 0
+        users[str(user.id)]["bank"] = 100
+
+    with open("mainbank.json", "w") as f:
+        json.dump(users,f,indent=4)
+        return True
+
+async def get_bank_data():
+    with open("mainbank.json", "r") as f:
+        users = json.load(f)
+
+        return users
+
+async def update_bank(user, change=0, mode="wallet"):
+    users = await get_bank_data()
+    users[str(user.id)][mode] += change
+    with open("mainbank.json", "w") as f:
+        json.dump(users,f,indent=4)
+    bal = [users[str(user.id)]["wallet"]],users[str(user.id)["bank"]]
+    return bal
 
 bot.run(token)
