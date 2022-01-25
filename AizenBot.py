@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 import json
 import os
 
-os.chdir('C:\\Users\\User\\Desktop\\AizenBot_Repository\\AizenBot.py')
+os.chdir('C:\\Users\\User\\Desktop\\AizenBot_Repository')
 
 if os.path.exists(os.getcwd() + "/config.json"):
     with open("./config.json") as f:
@@ -48,7 +48,7 @@ async def balance(ctx, user: discord.Member = None):
         users = await get_bank_data()
         user = user
 
-        wallet_amount = users[str(user.id)]["walllet"]
+        wallet_amount = users[str(user.id)]["wallet"]
         bank_amount = users[str(user.id)]["bank"]
 
         embed = discord.Embed(title= "User\'s ballance")
