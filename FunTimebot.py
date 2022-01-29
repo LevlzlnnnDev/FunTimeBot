@@ -2,9 +2,10 @@ import discord
 from discord.ext import commands, tasks
 
 import json
+import random
 import os
 
-os.chdir('C:\\Users\\User\\Desktop\\AizenBot_Repository')
+os.chdir('C:\\Users\\User\\Desktop\\FuntimeBot')
 
 if os.path.exists(os.getcwd() + "/config.json"):
     with open("./config.json") as f:
@@ -32,6 +33,12 @@ async def on_message(message):
         return
     await bot.process_commands(message)
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        msg = '**Vá com calma amigo**, tente novamente em {:.2f} segundos'.format(error.retry_after)
+        await ctx.send(msg)
+
 @bot.command(name="teste")
 async def try_teste(ctx):
     name = ctx.author.name
@@ -56,6 +63,45 @@ async def balance(ctx, user: discord.Member = None):
         embed.add_field(name="bank", value=f"{bank_amount}")
 
     await ctx.send(embed = embed)
+
+@bot.command(name="beg")
+@commands.cooldown(1,60,commands.BucketType.user)
+async def beg(ctx):
+    await open_account(ctx.author)
+    user = ctx.author
+
+    users = await get_bank_data()
+
+    earnings = random.randrange(101) 
+    await ctx.send(f"Alguem te deu {earnings} moedas")
+    users[str(user.id)]["wallet"] += earnings
+
+    with open("mainbank.json", "w") as f:
+        json.dump(users, f)
+
+# @bot.command(name="with")
+# async def withdraw(ctx,amount = None):
+#     await open_account(ctx.author)
+
+#     if amount == None:
+#         await ctx.send("Você se esqueceu de colocar a quantia amigo, tente novamente")
+#         return
+    
+#     bal = await update_bank(ctx.author)
+
+#     amount = int(amount)
+#     if amount>bal[0]:
+#         await ctx.send("Você está tentando retirar muito mais do que tem em, vai ser cobrado")
+#         return
+    
+#     if amount<bal[0]:
+#         await ctx.send("A quantidade tem que ser acima de 0, senão n tem como meu parceiro")
+#         return
+
+#     await update_bank(ctx.author,amount)
+#     await update_bank(ctx.author,-1*amount,"bank")
+
+#     await ctx.send(f"Você retirou {amount} moedas do banco")
 
 async def open_account(user):
     users = await get_bank_data()
