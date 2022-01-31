@@ -1,9 +1,12 @@
+from ast import If
+from turtle import title
 import discord
 from discord.ext import commands, tasks
 
 import json
 import random
 import os
+import time
 
 os.chdir('C:\\Users\\User\\Desktop\\FuntimeBot')
 
@@ -38,6 +41,36 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         msg = '**Vá com calma amigo**, tente novamente em {:.2f} segundos'.format(error.retry_after)
         await ctx.send(msg)
+
+@bot.event
+async def on_message(message):
+    reactionadd = False
+    randomreact = random.randrange(101)
+
+    if randomreact > 80:
+        reactionadd = True
+    else:
+        reactionadd = False
+
+    if reactionadd == True:
+        await message.add_reaction('🐦')
+
+# @bot.event
+# async def on_raw_reaction_add(payload, ctx):
+#     emoji = payload.emoji.name
+#     user = ctx.author
+#     users = await get_bank_data()
+#     await open_account(ctx.author)
+
+#     if emoji == '🐦':
+#         earnings = random.randrange(1000)
+#         users[str(user.id)]["bank"] += earnings
+
+#     await ctx.send(f"Você achou o passáro vermelho, adicionadas {earnings} moedas em sua conta :)")
+
+#     with open("mainbank.json", "w") as f:
+#         json.dump(users, f)
+
 
 @bot.command(name="teste")
 async def try_teste(ctx):
