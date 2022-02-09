@@ -52,12 +52,15 @@ async def update_bank(user, change=0, mode="wallet"):
     return bal
 
 def load_cogs(bot):
-    bot.load_extension("manager")
-
     for file in os.listdir("commands"):
         if file.endswith(".py"):
             cog = file[:-3]
             bot.load_extension(f"commands.{cog}")
+
+    for file in on.listdir("management"):
+        if file.endswith(".py"):
+            cog = file[:-3]
+            bot.load_extension(f"management.{cog}")
 
 load_cogs(bot)
 bot.run(token)

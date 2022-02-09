@@ -29,8 +29,7 @@ class Manager(commands.Cog):
                     description='Error: {}'.format(error),
                     colour=discord.Colour.orange()
                 )
-                await ctx.send(embed=embed, delete_after=10.0)
-
-    
+                await ctx.send(embed=embed)
+                
 def setup(bot):
     bot.add_cog(Manager(bot))
