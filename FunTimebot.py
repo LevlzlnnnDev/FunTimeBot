@@ -57,7 +57,7 @@ def load_cogs(bot):
             cog = file[:-3]
             bot.load_extension(f"commands.{cog}")
 
-    for file in on.listdir("management"):
+    for file in os.listdir("management"):
         if file.endswith(".py"):
             cog = file[:-3]
             bot.load_extension(f"management.{cog}")
